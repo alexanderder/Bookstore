@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:o="http://omnifaces.org/ui">
+<ui:composition template="/templates/layout.xhtml">
+  <ui:define name="content">
+
+    <h:form prependId="false" id="bookDataForm">
+
+        <p:dataTable id="bookTable" value="#{bookBean.bookList}" var="book" resizableColumns="true" paginator="true"
+                paginatorTemplate=" {CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                rowsPerPageTemplate="5,10,25,50" rows="10" draggableColumns="true"
+                paginatorPosition="bottom" widgetVar="bookTable" emptyMessage="No records found."
+                reflow="true">
+        
+          <f:facet name="header" >
+
+              <p:commandButton value="Create New Book" icon="ui-icon-plusthick"
+                      action="/pages/book/bookCreate?faces-redirect=true"
+                      style="float:left" />
+              
+              <p:commandButton id="toggler" type="button" value="Select Columns" icon="ui-icon-calculator" />
+              <p:columnToggler datasource="bookTable" trigger="toggler" />
+          </f:facet>
+          
+          <p:column headerText="Name" sortBy="#{book.name}" filterBy="#{book.name}">
+            <f:facet name="filter">
+                <p:inputText id="nameFilter"
+                        onkeypress="if (event.keyCode == 13) {PF('bookTable').filter(); updateNameFilter(); return false; }" >
+                    <p:remoteCommand name="updateNameFilter" update="bookTable:nameFilter" />
+                </p:inputText>
+            </f:facet>
+            <h:outputText value="#{book.name}" />
+          </p:column>
+
+          <p:column headerText="Price" sortBy="#{book.price}" filterBy="#{book.price}">
+            <f:facet name="filter">
+                <p:inputText id="priceFilter"
+                        onkeypress="if (event.keyCode == 13) {PF('bookTable').filter(); updatePriceFilter(); return false; }" >
+                    <f:convertNumber />
+                    <p:remoteCommand name="updatePriceFilter" update="bookTable:priceFilter" />
+                </p:inputText>
+            </f:facet>
+            <h:outputText value="#{book.price}"><f:convertNumber /></h:outputText>
+          </p:column>
+
+          <p:column headerText="Stock" sortBy="#{book.stock}" filterBy="#{book.stock}">
+            <f:facet name="filter">
+                <p:inputText id="stockFilter"
+                        onkeypress="if (event.keyCode == 13) {PF('bookTable').filter(); updateStockFilter(); return false; }" >
+                    <p:remoteCommand name="updateStockFilter" update="bookTable:stockFilter" />
+                    <f:convertNumber integerOnly="true" />
+                </p:inputText>
+            </f:facet>
+            <h:outputText value="#{book.stock}" ><f:convertNumber /></h:outputText>
+          </p:column>
+
+          <p:column headerText="Launch Date" sortBy="#{book.launchDate}" filterBy="#{book.launchDate}">
+            <f:facet name="filter">
+                <p:inputText id="launchDateFilter"
+                        onkeyup="if (event.keyCode == 13) {PF('bookTable').filter(); updateLaunchDateFilter(); return false;}" >
+                    <p:remoteCommand name="updateLaunchDateFilter" update="bookTable:launchDateFilter" />
+                    <f:convertDateTime />
+                </p:inputText>
+            </f:facet>
+            <h:outputText value="#{book.launchDate}"><f:convertDateTime /></h:outputText>
+          </p:column>
+
+          <p:column headerText="Discontinued" sortBy="#{book.discontinued}" filterBy="#{book.discontinued}" exportable="false">
+            <f:facet name="filter">
+                 <p:selectOneMenu converter="javax.faces.Boolean"
+                        onchange="PF('bookTable').filter(); return false;" style="width:50%">
+                        <f:selectItem itemLabel="&nbsp;" itemValue="" />
+                        <f:selectItem itemLabel="Yes" itemValue="true" />
+                        <f:selectItem itemLabel="No" itemValue="false" />
+                </p:selectOneMenu>
+            </f:facet>
+            <h:panelGroup styleClass="ui-icon ui-icon-check" rendered="#{book.discontinued}"/>
+          </p:column>
+
+          <p:column headerText="Author" sortBy="#{book.author}" filterBy="#{book.author}">
+            <f:facet name="filter">
+				<p:selectOneMenu  id="authorFilter"
+								style="width:145px;"
+								onchange="PF('bookTable').filter(); return false;">
+					<f:selectItem noSelectionOption="true" itemLabel="" />
+					<f:selectItems itemLabel="#{author.name}"
+								value="#{bookBean.authors}" 
+								var="author" 
+								itemValue="#{author}" />
+					<o:converter converterId="omnifaces.SelectItemsConverter" list="#{bookBean.authors}" />
+				</p:selectOneMenu>
+            </f:facet>
+            <h:outputText value="#{book.author.name}" />
+          </p:column>
+
+          <p:column headerText="Tags" styleClass="action-column" exportable="false">
+            
+            <p:commandButton icon="ui-icon-transfer-e-w"  title="Tags" action="#{'/pages/book/bookTag?faces-redirect=true&amp;id='.concat(book.id)}" />
+            
+          </p:column>
+
+          <p:column styleClass="action-column" headerText="Actions" width="115" exportable="false">
+            
+            <p:commandButton action="#{'/pages/book/bookView?faces-redirect=true&amp;id='.concat(book.id)}"
+                icon="ui-icon-zoomin"
+                title="View" />
+            
+            <p:commandButton action="#{'/pages/book/bookEdit?faces-redirect=true&amp;id='.concat(book.id)}"
+                icon="ui-icon-pencil"
+                resetValues="true"
+                title="Edit" />
+                
+            <p:commandButton icon="ui-icon-close" 
+                oncomplete="PF('deleteBookDialogWidget').show()"
+                title="Delete" >
+                <f:setPropertyActionListener value="#{book}"
+                    target="#{bookBean.book}" />
+            </p:commandButton>
+    
+          </p:column>
+          
+        </p:dataTable>
+        
+    </h:form>
+
+    <p:confirmDialog id="deleteBookDialog" widgetVar="deleteBookDialogWidget"
+        header="Confirm Deletion"
+        severity="alarm">
+        <f:facet name="message"><h:outputText value="Are you sure you want to delete this record?" escape="false"/></f:facet>
+        <p:outputPanel>
+          <h:form>
+            <div style="text-align: center; margin:10px">
+              <p:commandButton value="Delete" action="#{bookBean.delete}" update="@all" oncomplete="PF('deleteBookDialogWidget').hide()" />
+              <p:commandButton value="Cancel" onclick="PF('deleteBookDialogWidget').hide()" type="button" />
+            </div>
+          </h:form>
+        </p:outputPanel>
+    </p:confirmDialog>
+    
+  </ui:define>
+</ui:composition>
+</html>

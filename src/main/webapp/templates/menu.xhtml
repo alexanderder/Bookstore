@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:composition>
+        <h:form>
+            <p:menu>
+                <p:submenu label="Pages">
+
+                    <p:menuitem value="Books" outcome="/pages/book/book.xhtml" icon="icon-entity" ajax="false" async="false" />
+
+                    <p:menuitem value="Authors" outcome="/pages/author/author.xhtml" icon="icon-entity" ajax="false" async="false" />
+
+                    <p:menuitem value="Tagwords" outcome="/pages/tagword/tagword.xhtml" icon="icon-entity" ajax="false" async="false" />
+
+                </p:submenu>
+
+            </p:menu>
+        </h:form>
+    </ui:composition>
+</html>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:o="http://omnifaces.org/ui">
+<ui:composition template="/templates/layout.xhtml">
+  <ui:define name="content">
+  
+    <f:metadata>
+      <f:viewParam name="id" value="#{bookBean.book}" converter="#{genericEntityConverter}" />
+    </f:metadata>
+    
+    <p:outputPanel id="bookEditPanel">
+        <h:form id="editBookForm">
+			<p:outputPanel styleClass="ui-fluid">
+
+				<p:panelGrid columns="3" columnClasses="ui-grid-col-4,ui-grid-col-6,ui-grid-col-2" layout="grid" style="max-width:400px">
+				
+					<h:outputLabel value="Name:" for="nameEditInput" />
+					<p:inputText value="#{bookBean.book.name}" id="nameEditInput" 
+						label="Name" />
+					<p:message for="nameEditInput" display="icon" />
+
+					<h:outputLabel value="Price:" for="priceEditInput" />
+					<p:inputText value="#{bookBean.book.price}" id="priceEditInput" label="Price" >
+						<f:convertNumber />
+					</p:inputText>
+					<p:message for="priceEditInput" display="icon" />
+
+					<h:outputLabel value="Stock:" for="stockEditInput" />
+					<p:inputText value="#{bookBean.book.stock}"  id="stockEditInput" 
+						label="Stock" />
+					<p:message for="stockEditInput" display="icon" />
+
+					<h:outputLabel value="Launch Date:" for="launchDateEditInput" />
+					<p:calendar id="launchDateEditInput" navigator="true" value="#{bookBean.book.launchDate}" label="Launch Date" />
+					<p:message for="launchDateEditInput" display="icon" />
+
+					<h:outputLabel value="Discontinued:" for="discontinuedInput" />
+					<p:selectBooleanCheckbox value="#{bookBean.book.discontinued}" id="discontinuedInput" label="Discontinued" />
+					<p:message for="discontinuedInput" display="icon" />
+
+					<h:outputLabel value="Author:" for="authorSelectInput" />
+					<h:panelGroup>
+						<p:selectOneMenu value="#{bookBean.book.author}"
+										id="authorSelectInput">
+							<f:selectItem noSelectionOption="true" itemLabel="" />
+							<f:selectItems value="#{bookBean.authors}" 
+										var="author" 
+										itemLabel="#{author.name}"
+										itemValue="#{author}" />
+							<o:converter converterId="omnifaces.SelectItemsConverter" list="#{bookBean.authors}" />
+						</p:selectOneMenu>
+					</h:panelGroup>
+					<p:message for="authorSelectInput" display="icon" />
+					
+				</p:panelGrid>
+
+			</p:outputPanel>
+            <div style="margin:10px">
+                <p:commandButton value="Save" icon="ui-icon-disk" actionListener="#{bookBean.persist}"
+                        action="/pages/book/book?faces-redirect=true" update=":bookEditPanel :growlForm:growl" />
+                <p:commandButton value="Cancel" icon="ui-icon-close"
+                        action="/pages/book/book?faces-redirect=true" immediate="true" />
+            </div>
+        </h:form>
+    </p:outputPanel>
+    
+  </ui:define>
+  
+</ui:composition>
+</html>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:o="http://omnifaces.org/ui">
+<ui:composition template="/templates/layout.xhtml">
+  <ui:define name="content">
+  
+    <f:metadata>
+      <f:viewParam name="id" value="#{bookBean.book}" converter="#{genericEntityConverter}" />
+    </f:metadata>
+    
+    <p:outputPanel id="bookViewPanel" >
+        <h:form id="viewBookForm">
+			<h:panelGrid columns="2" styleClass="dialog" columnClasses="col1,col2" >
+				
+				<h:outputText value="Name:"  />
+				<h:outputText value="#{bookBean.book.name}" />
+
+				<h:outputText value="Price:" />
+				<h:outputText value="#{bookBean.book.price}" ><f:convertNumber /></h:outputText>
+
+				<h:outputText value="Stock:" />
+				<h:outputText value="#{bookBean.book.stock}" />
+
+				<h:outputText value="Launch Date:" />
+				<h:outputText value="#{bookBean.book.launchDate}" ><f:convertDateTime /></h:outputText>
+
+				<h:outputText value="Discontinued:" />
+				<p:selectBooleanCheckbox disabled="true" value="#{bookBean.book.discontinued}" id="discontinuedInput" />
+
+				<h:outputText value="Author:" />
+				<h:outputText value="#{bookBean.book.author.name}" />
+
+			</h:panelGrid>
+            <div style="margin:10px">
+                <p:commandButton value="Close" icon="ui-icon-close" action="/pages/book/book?faces-redirect=true" immediate="true"/>
+            </div>
+        </h:form>
+    </p:outputPanel>
+  
+  </ui:define>
+  
+</ui:composition>
+</html>
